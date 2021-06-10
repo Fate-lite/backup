@@ -318,21 +318,21 @@ async function jdJXNC() {
         await submitInviteId($.UserName);
         await $.wait(500);
         let next = await helpFriends();
-        if (next) {
-          while ($.helpNum < $.maxHelpNum) {
-            $.helpNum++;
-            assistUserShareCodeJson = await getAssistUser();
-            if (assistUserShareCodeJson) {
-              await $.wait(500);
-              next = await helpShareCode(assistUserShareCodeJson['smp'], assistUserShareCodeJson['active'], assistUserShareCodeJson['joinnum']);
-              if (next) {
-                await $.wait(1000);
-                continue;
-              }
-            }
-            break;
-          }
-        }
+        // if (next) {
+        //   while ($.helpNum < $.maxHelpNum) {
+        //     $.helpNum++;
+        //     assistUserShareCodeJson = await getAssistUser();
+        //     if (assistUserShareCodeJson) {
+        //       await $.wait(500);
+        //       next = await helpShareCode(assistUserShareCodeJson['smp'], assistUserShareCodeJson['active'], assistUserShareCodeJson['joinnum']);
+        //       if (next) {
+        //         await $.wait(1000);
+        //         continue;
+        //       }
+        //     }
+        //     break;
+        //   }
+        // }
       }
     }
   }
@@ -523,40 +523,40 @@ function submitInviteId(userName) {
   });
 }
 
-function getAssistUser() {
-  return new Promise(resolve => {
-    try {
-      $.get({
-        url: `https://api.ninesix.cc/api/jx-nc?active=${$.info.active}`,
-        timeout: 10000
-      }, async (err, resp, _data) => {
-        try {
-          const {code, data: {value, extra = {}} = {}} = JSON.parse(_data);
-          if (value && extra.active) { //  && extra.joinnum 截止 2021-01-22 16:39:09 API 线上还未部署新的 joinnum 参数代码，暂时默认 1 兼容
-            let shareCodeJson = {
-              'smp': value,
-              'active': extra.active,
-              'joinnum': extra.joinnum || 1
-            };
-            $.log(`获取随机助力码成功 ` + JSON.stringify(shareCodeJson));
-            resolve(shareCodeJson);
-            return;
-          } else {
-            $.log(`获取随机助力码失败 ${code}`);
-          }
-        } catch (e) {
-          // $.logErr(e, resp);
-          $.log('获取随机助力码失败 API 返回异常');
-        } finally {
-          resolve(false);
-        }
-      });
-    } catch (e) {
-      // $.logErr(e, resp);
-      resolve(false);
-    }
-  });
-}
+// function getAssistUser() {
+//   return new Promise(resolve => {
+//     try {
+//       $.get({
+//         url: `https://api.ninesix.cc/api/jx-nc?active=${$.info.active}`,
+//         timeout: 10000
+//       }, async (err, resp, _data) => {
+//         try {
+//           const {code, data: {value, extra = {}} = {}} = JSON.parse(_data);
+//           if (value && extra.active) { //  && extra.joinnum 截止 2021-01-22 16:39:09 API 线上还未部署新的 joinnum 参数代码，暂时默认 1 兼容
+//             let shareCodeJson = {
+//               'smp': value,
+//               'active': extra.active,
+//               'joinnum': extra.joinnum || 1
+//             };
+//             $.log(`获取随机助力码成功 ` + JSON.stringify(shareCodeJson));
+//             resolve(shareCodeJson);
+//             return;
+//           } else {
+//             $.log(`获取随机助力码失败 ${code}`);
+//           }
+//         } catch (e) {
+//           // $.logErr(e, resp);
+//           $.log('获取随机助力码失败 API 返回异常');
+//         } finally {
+//           resolve(false);
+//         }
+//       });
+//     } catch (e) {
+//       // $.logErr(e, resp);
+//       resolve(false);
+//     }
+//   });
+// }
 
 // 为好友助力 return true 继续助力  false 助力结束
 async function helpFriends() {
