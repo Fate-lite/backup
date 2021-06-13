@@ -1,28 +1,6 @@
 /*
-* author:star
-* */
-/*
 明星小店(星店长)
-助力逻辑：每个ck随机获取一个明星，然后会先内部助力，然后再助力内置助力码
-抽奖：是否中奖没判断，需自行查看
-更新时间：2021-06-06
-脚本兼容: QuantumultX, Surge,Loon, JSBox, Node.js
-=================================Quantumultx=========================
-[task_local]
-#明星小店
-0 1,21 * * * jd_star_shop.js, tag=明星小店, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
-=================================Loon===================================
-[Script]
-cron "0 1,21 * * *" script-path=jd_star_shop.js,tag=明星小店
-
-===================================Surge================================
-明星小店 = type=cron,cronexp="0 1,21 * * *",wake-system=1,timeout=3600,script-path=jd_star_shop.js
-
-====================================小火箭=============================
-明星小店 = type=cron,script-path=jd_star_shop.js, cronexpr="0 1,21 * * *", timeout=3600, enable=true
  */
-
 const $ = new Env('明星小店');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -30,14 +8,14 @@ $.inviteCodeList = [];
 $.authorCodeList = [];
 let cookiesArr = [];
 let uniqueIdList = [
-     {'id':'HY4HCW','name':'陈坤'},{'id':'KDDAR9','name':'徐凯'},{'id':'UN2SU2','name':'赵雷'},
-     {'id':'637BQA','name':'成毅'},{'id':'XLDYRJ','name':'白宇'},{'id':'94FEDQ','name':'任嘉伦'},{'id':'GN949D','name':'刘宇宁'},{'id':'WG73ME','name':'李光洁'},{'id':'5JFCD6','name':'李纹翰'},
-     {'id':'YCDXNN','name':'蔡徐坤'},{'id':'CX522V','name':'邓伦'},{'id':'877JM4','name':'张哲瀚'},{'id':'D22Q7C','name':'孟美岐'},{'id':'K6DARX','name':'龚俊'},{'id':'2SFR44','name':'白茶'},
-     {'id':'S99D9G','name':'刘浩存'},{'id':'ET5F23','name':'吴尊'},{'id':'TXU6GB','name':'刘雨欣'},{'id':'FBFN48','name':'李宇春'},{'id':'UK2SUY','name':'虞书欣'},{'id':'VS4PEM','name':'热依扎'},
-     {'id':'QE9757','name':'黄弈'},{'id':'2PFR4L','name':'张云龙'},{'id':'4A2M7K','name':'张伯芝'},{'id':'J8UWSP','name':'戚薇'},{'id':'3FU8S5','name':'周柯宇'},{'id':'P94VEU','name':'林志玲'},
-     {'id':'LW4LCK','name':'田鸿杰'},{'id':'MW9U5Z','name':'吴宇恒'},{'id':'AVDKNT','name':'张嘉倪'},{'id':'3PU8SZ','name':'阿云嘎'},{'id':'ZQ7TQR','name':'马家辉'}, {'id':'VZ4PEY','name':'翟潇闻'},
-     {'id':'ZH7TQ6','name':'李一桐'},{'id':'4C2M75','name':'张馨予'},{'id':'E55F2M','name':'雷米'},{'id':'M79U5N','name':'无穷小亮'},{'id':'762GUB','name':'刘昊然'},{'id':'8K7JM3','name':'止庵'},
-     {'id':'LQ4LCS','name':'倪妮'},{'id':'YTDXNL','name':'宫殿君'},{'id':'5RFCD9','name':'王菲菲'},
+  {'id':'HY4HCW','name':'陈坤'},{'id':'KDDAR9','name':'徐凯'},
+  {'id':'637BQA','name':'成毅'},{'id':'XLDYRJ','name':'白宇'},{'id':'94FEDQ','name':'任嘉伦'},{'id':'GN949D','name':'刘宇宁'},{'id':'WG73ME','name':'李光洁'},{'id':'5JFCD6','name':'李纹翰'},
+  {'id':'YCDXNN','name':'蔡徐坤'},{'id':'CX522V','name':'邓伦'},{'id':'877JM4','name':'张哲瀚'},{'id':'D22Q7C','name':'孟美岐'},{'id':'K6DARX','name':'龚俊'},{'id':'2SFR44','name':'白茶'},
+  {'id':'S99D9G','name':'刘浩存'},{'id':'ET5F23','name':'吴尊'},{'id':'TXU6GB','name':'刘雨欣'},{'id':'FBFN48','name':'李宇春'},{'id':'UK2SUY','name':'虞书欣'},{'id':'VS4PEM','name':'热依扎'},
+  {'id':'QE9757','name':'黄弈'},{'id':'2PFR4L','name':'张云龙'},{'id':'4A2M7K','name':'张伯芝'},{'id':'J8UWSP','name':'戚薇'},{'id':'3FU8S5','name':'周柯宇'},{'id':'P94VEU','name':'林志玲'},
+  {'id':'LW4LCK','name':'田鸿杰'},{'id':'MW9U5Z','name':'吴宇恒'},{'id':'AVDKNT','name':'张嘉倪'},{'id':'3PU8SZ','name':'阿云嘎'},{'id':'ZQ7TQR','name':'马家辉'}, {'id':'VZ4PEY','name':'翟潇闻'},
+  {'id':'ZH7TQ6','name':'李一桐'},{'id':'4C2M75','name':'张馨予'},{'id':'E55F2M','name':'雷米'},{'id':'M79U5N','name':'无穷小亮'},{'id':'762GUB','name':'刘昊然'},{'id':'8K7JM3','name':'止庵'},
+  {'id':'LQ4LCS','name':'倪妮'},{'id':'YTDXNL','name':'宫殿君'},{'id':'5RFCD9','name':'王菲菲'},
 ];
 $.shopId = '94FEDQ';
 $.tokenId = 'jd6df03bd53f0f292f';
@@ -45,6 +23,7 @@ $.xdzHelpCodeList = [];
 /**奖品只有优惠券，不做他们家的任务
  *{'id':'TRU6GG','name':'王一博'}
  *{'id':'ND55FR','name':'刘诗诗'}
+ * {'id':'UN2SU2','name':'赵雷'},
  * */
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -131,7 +110,7 @@ if ($.isNode()) {
     }
     await main();
   }
-  // $.inviteCodeList.push(...getRandomArrayElements($.authorCodeList, 5));
+  $.inviteCodeList.push(...getRandomArrayElements($.authorCodeList, 5));
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -189,7 +168,7 @@ async function main() {
         console.log(`获得实物：${$.rewards[i].prizeDesc || ''},已填写地址`);
       }
     } else if ($.rewards[i].prizeType === 10) {
-         console.log(`获得京豆`);
+      console.log(`获得京豆`);
     } else {
       console.log(`获得其他：${$.rewards[i].prizeDesc || ''}`);
     }
@@ -240,11 +219,11 @@ async function xdz(){
   // let awardVoList = $.xdzInfo.awardVoList;
   // for (let i = 0; i < awardVoList.length; i++) {
   //   $.oneAwardInfo = awardVoList[i];
-    // if($.oneAwardInfo.status === 1 && $.oneAwardInfo.grade === 1){
-    //   console.log(`执行抽奖`);
-    //   drawAward();
-    //   await $.wait(2000);
-    // }
+  // if($.oneAwardInfo.status === 1 && $.oneAwardInfo.grade === 1){
+  //   console.log(`执行抽奖`);
+  //   drawAward();
+  //   await $.wait(2000);
+  // }
   // }
 
   console.log(`执行瓜分`);
