@@ -30,7 +30,6 @@ const $ = new Env('京东手机狂欢城');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message = '', allMessage = '';
 
@@ -86,7 +85,7 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
         }
         continue
       }
-      await shareCodesFormat();
+      // await shareCodesFormat();
       await JD818();
     }
   }
@@ -107,13 +106,8 @@ let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*
           }
         }
       }
-      if ($.canHelp) {
-        console.log(`\n\n如果有剩余助力机会，则给作者以及随机码助力`)
-        await doHelp();
-      }
     }
   }
-  // console.log(JSON.stringify($.temp))
   if (allMessage) {
     //NODE端,默认每月一日运行进行推送通知一次
     if ($.isNode()) {
@@ -551,17 +545,17 @@ function saveJbean(date) {
     })
   })
 }
-async function doHelp() {
-  console.log(`\n开始助力好友`);
-  for (let item of $.newShareCodes) {
-    if (!item) continue;
-    const helpRes = await toHelp(item.trim());
-    if (helpRes.data.status === 5) {
-      console.log(`助力机会已耗尽，跳出助力`);
-      break;
-    }
-  }
-}
+// async function doHelp() {
+//   console.log(`\n开始助力好友`);
+//   for (let item of $.newShareCodes) {
+//     if (!item) continue;
+//     const helpRes = await toHelp(item.trim());
+//     if (helpRes.data.status === 5) {
+//       console.log(`助力机会已耗尽，跳出助力`);
+//       break;
+//     }
+//   }
+// }
 //助力API
 function toHelp(code = "7c4deed4-2a26-4fa1-bb27-8421f02f30a6") {
   return new Promise(resolve => {
