@@ -53,7 +53,6 @@ class ZooFakerNecklace {
     if (!smashUtils) {
       await this.init();
     }
-
     const t = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
     const pin = this.cookie.match(REG_PIN)[1];
     const { log } = smashUtils.get_risk_result({
@@ -105,12 +104,7 @@ class ZooFakerNecklace {
 
       smashUtils = ctx.window.smashUtils;
       smashUtils.init(DATA);
-
-      // console.log(ctx);
     }
-
-    // console.log(html);
-    // console.log(script[1],script[2]);
     console.timeEnd('ZooFakerNecklace');
   }
 
