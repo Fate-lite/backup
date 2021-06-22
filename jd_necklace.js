@@ -13,7 +13,7 @@ Last Modified time: 2021-05-28 17:27:14
 cron "10 0,20 * * *" script-path=jd_necklace.js,tag=点点券
 
 ===============Surge=================
-点点券 = type=cron,cronexp="10 0,20 * * *",wake-system=1,timeout=3600,script-path=jd_necklace.js
+点点券 = type=cron,cronexp="10 0,20 * * *",wake-system=1,timeout=3600,script-path=.js
 
 ============小火箭=========
 点点券 = type=cron,script-path=jd_necklace.js, cronexpr="10 0,20 * * *", timeout=3600, enable=true
