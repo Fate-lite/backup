@@ -7,7 +7,7 @@ const UA = require('./USER_AGENTS.js').USER_AGENT;
 const URL = 'https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html';
 const REG_SCRIPT = /<script src="([^><]+\/(main\.\w+\.js))\?t=\d+">/gm;
 const REG_ENTRY = /^(.*?\.push\(\[)(\d+,\d+)/;
-const REG_PIN = /pt_pin=(\w+?);/m;
+const REG_PIN = /pt_pin=(.+?);/m;
 const KEYWORD_MODULE = 'get_risk_result:';
 const DATA = {appid:'50082',sceneid:'DDhomePageh5'};
 let smashUtils;
@@ -17,12 +17,17 @@ class ZooFakerNecklace {
         this.cookie = cookie;
         this.action = action;
     }
+
     async run(data) {
         if (!smashUtils) {
             await this.init();
         }
+
         const t = Math.floor(1e+6 * Math.random()).toString().padEnd(6, '8');
-        const pin = this.cookie.match(REG_PIN)[1];
+        const mpin = this.cookie.match(REG_PIN)
+        let pin = '-1'
+        // if(mpin) pin = mpin[1];
+        if(mpin) pin = decodeURIComponent(mpin[1]);
         const { log } = smashUtils.get_risk_result({
             id: this.action,
             data: {
@@ -36,9 +41,11 @@ class ZooFakerNecklace {
             random: t,
             extraData: { log, sceneid: DATA.sceneid },
         };
+
         // console.log(body);
         return body;
     }
+
     async init() {
         console.time('ZooFakerNecklace');
         process.chdir(__dirname);
@@ -64,16 +71,21 @@ class ZooFakerNecklace {
                     return _this.cookie;
                 },
             });
+
             vm.createContext(ctx);
             vm.runInContext(jsContent, ctx);
+
             smashUtils = ctx.window.smashUtils;
             smashUtils.init(DATA);
+
             // console.log(ctx);
         }
+
         // console.log(html);
         // console.log(script[1],script[2]);
         console.timeEnd('ZooFakerNecklace');
     }
+
     async getJSContent(cacheKey, url) {
         try {
             await fs.access(cacheKey, R_OK);
@@ -145,7 +157,8 @@ async function getBody($ = {}) {
     const zf = new ZooFakerNecklace($.cookie, $.action);
     const log = await zf.run(riskData);
 
-    return `body=${encodeURIComponent(JSON.stringify(log))}`;
+    // return `body=${encodeURIComponent(JSON.stringify(log))}`;
+    return log;
 }
 
 ZooFakerNecklace.getBody = getBody;
